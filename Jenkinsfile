@@ -129,7 +129,41 @@ pipeline {
                             }
                             else {
                                 echo "Second endpoint request  with status code ${SecondstatusCode}"
-                            }
+                            } 
+
+
+             
+
+
+             // stage to Check Current Build Status
+
+        stage('Trigger Specific Build') {
+
+            steps {
+                script {
+
+                    echo "Current Job Name: ${jobName}"
+                     jobName = "${jobName}" // Replace with the name of your Jenkins job SampleSYSProject/master
+                    def buildNumber = '100' // Replace with the build number you want to trigger
+                    //def triggeredBuild = build(job: jobName, parameters: [[$class: 'StringParameterValue', name: 'BUILD_NUMBER', value: buildNumber]])
+                    // if (triggeredBuild.resultIsBetterOrEqualTo('SUCCESS')) {
+                    //     echo "Triggered build #${buildNumber} of job ${jobName} was successful."
+                    // } else {
+                    //     error "Failed to trigger build #${buildNumber} of job ${jobName}."
+                    // }
+
+                    def job = Jenkins.instance.getItem(jobName)
+                     echo "Instance item: ${job}"
+                    def lastSuccessfulBuild = job.getLastSuccessfulBuild()  
+                     echo "Last successfull build: ${lastSuccessfulBuild}"
+                           // Get the last successful build
+                    lastSuccessfulBuild.scheduleBuild2(0)
+                     echo "Current Job Name: success"
+                }
+            }
+        }
+
+
             }
         }
     }
