@@ -118,6 +118,8 @@ pipeline {
                         } else {
                             echo "Second endpoint request  with status code ${SecondstatusCode}"
                         }
+                        // Define currentBuildStatus within the try block
+                        def currentBuildStatus = currentBuild.result
                     } catch (Exception e) {
                         // Handle the exception when there is an error in the stage
                         echo "An error occurred in the 'Call Management API' stage: ${e.getMessage()}"
