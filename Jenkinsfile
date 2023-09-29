@@ -46,7 +46,7 @@ pipeline {
                         // Step 2: Call the Second Endpoint to get no of Carfiles Deployed
                         echo "AccessTokenFirst: ${inputdata}"
                         def res = httpRequest(
-                            url: "https://localhost:9164/management/applications?carbonAppName=${carbonAppName}",
+                            url: "",
                             httpMode: 'GET',
                             customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
                             acceptType: 'APPLICATION_JSON',
@@ -123,20 +123,10 @@ pipeline {
                         echo "An error occurred in the 'Call Management API' stage: ${e.getMessage()}"
                         // Optionally, you can take additional actions or set a build result here
                         currentBuild.result = 'FAILURE' // Set the build result to FAILURE
-                    }
-                }
-            }
-        }
-        
-        // stage to Check Current Build Status
-        stage('Check Build Status') {
-             when {
-                // Specify that the second stage should only run if the first stage fails
-                expression { !firstStageSuccess }
-            }
-            steps {
-                script {
-                    echo "Current Job Name: ${jobName}"
+                        echo "currentBuildStatus1: ${currentBuildStatus}"
+                        // step3 to Check Current Build Status
+                        echo "Current Job Name: ${jobName}"
+                    def currentBuildStatus = currentBuild.result
                     echo "currentBuildStatus: ${currentBuildStatus}"
                     echo "currentBuildStatus2: ${currentBuildStatus}"
                     if (currentBuildStatus == 'SUCCESS') {
@@ -152,13 +142,14 @@ pipeline {
                             } else {
                                 error "No last successful build found for ${jobName}"
                             }
-                        }
                     }
                 }
             }
         }
-    }
-}
+        
+        
+                    }
+                }
+            }
+        }
     
-    
-
