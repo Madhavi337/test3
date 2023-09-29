@@ -149,7 +149,7 @@ pipeline {
         script {
             echo "Current Job Name: ${jobName}"
             def currentBuildStatus = currentBuild.result
-
+            echo "currentBuildStatus: ${currentBuildStatus}"
             if (currentBuildStatus == 'SUCCESS') {
                 echo "The current build was successful."
             } else {
