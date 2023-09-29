@@ -67,7 +67,7 @@ pipeline {
                             // Step 2: Call the third Endpoint to get the number of Carfiles Deployed
                             echo "AccessTokenFirst: ${inputdata}"
                             def resthree = httpRequest(
-                                url: 'https://localhost:9164/management/applications',
+                                url: '',
                                 httpMode: 'GET',
                                 customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
                                 acceptType: 'APPLICATION_JSON',
@@ -123,18 +123,12 @@ pipeline {
                         echo "An error occurred in the 'Call Management API' stage: ${e.getMessage()}"
                         // Optionally, you can take additional actions or set a build result here
                         currentBuild.result = 'FAILURE' // Set the build result to FAILURE
-                    }
-                }
-            }
-        }
-        
-        // stage to Check Current Build Status
-        stage('Check Build Status') {
-            steps {
-                script {
-                    echo "Current Job Name: ${jobName}"
+                        echo "currentBuildStatus1: ${currentBuildStatus}"
+                        // step3 to Check Current Build Status
+                        echo "Current Job Name: ${jobName}"
                     def currentBuildStatus = currentBuild.result
                     echo "currentBuildStatus: ${currentBuildStatus}"
+                    echo "currentBuildStatus2: ${currentBuildStatus}"
                     if (currentBuildStatus == 'SUCCESS') {
                         echo "The current build was successful."
                     } else {
@@ -148,10 +142,14 @@ pipeline {
                             } else {
                                 error "No last successful build found for ${jobName}"
                             }
-                        }
                     }
                 }
             }
         }
-    }
-}
+        
+        
+                    }
+                }
+            }
+        }
+    
