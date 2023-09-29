@@ -140,7 +140,7 @@ pipeline {
                             }
             }
         }
-    } }
+    } 
     
 // stage to Check Current Build Status
         stage('Trigger Specific Build') {
@@ -159,6 +159,8 @@ pipeline {
             }
         }
         }
+
+}
     
             
         
