@@ -1,15 +1,23 @@
+// Define jobName here
+def jobName = env.JOB_NAME
+
 pipeline {
     agent any
-
     environment {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
-    }
+        customJobName = "${jobName}"
+                    
 
+    }
+    options {         disableConcurrentBuilds()     }
     stages {
+        
         stage('Call Management API') { // A single stage that encompasses both steps
             steps {
                 script {
+                   
+                    echo "Current Job Name: ${jobName}"
                     // Step 1: Call the First Endpoint for Access Token
                     def response = httpRequest(
                         url: 'https://localhost:9164/management/login',
@@ -129,44 +137,29 @@ pipeline {
                             }
                             else {
                                 echo "Second endpoint request  with status code ${SecondstatusCode}"
-                            } 
-
-
-             
-
-
-             // stage to Check Current Build Status
-
+                            }
+            }
+        }
+    } }
+    
+// stage to Check Current Build Status
         stage('Trigger Specific Build') {
-
             steps {
                 script {
-
                     echo "Current Job Name: ${jobName}"
-                     jobName = "${jobName}" // Replace with the name of your Jenkins job SampleSYSProject/master
-                    def buildNumber = '100' // Replace with the build number you want to trigger
-                    //def triggeredBuild = build(job: jobName, parameters: [[$class: 'StringParameterValue', name: 'BUILD_NUMBER', value: buildNumber]])
-                    // if (triggeredBuild.resultIsBetterOrEqualTo('SUCCESS')) {
-                    //     echo "Triggered build #${buildNumber} of job ${jobName} was successful."
-                    // } else {
-                    //     error "Failed to trigger build #${buildNumber} of job ${jobName}."
-                    // }
+                     jobName = "${jobName}" // Replace with the name of your Jenkins job
+                    def buildNumber = '124' // Replace with the build number you want to trigger
 
-                    def job = Jenkins.instance.getItem(jobName)
-                     echo "Instance item: ${job}"
-                    def lastSuccessfulBuild = job.getLastSuccessfulBuild()  
-                     echo "Last successfull build: ${lastSuccessfulBuild}"
-                           // Get the last successful build
-                    lastSuccessfulBuild.scheduleBuild2(0)
-                     echo "Current Job Name: success"
+                    def triggeredBuild = build(job: jobName, parameters: [[$class: 'StringParameterValue', name: 'BUILD_NUMBER', value: buildNumber]])
+
+                    
+                        echo "success to trigger build #${buildNumber} of job ${jobName}."
+                    
                 }
             }
         }
-
-
-            }
         }
-    }
-}
+    
+            
+        
 
-}
