@@ -143,21 +143,38 @@ pipeline {
     } 
     
 // stage to Check Current Build Status
-        stage('Trigger Specific Build') {
+
+stages {
+
+        stage('Trigger Last Successful Build') {
+
             steps {
+
                 script {
-                    echo "Current Job Name: ${jobName}"
-                     jobName = "${jobName}" // Replace with the name of your Jenkins job
-                    def buildNumber = '124' // Replace with the build number you want to trigger
 
-                    def triggeredBuild = build(job: jobName, parameters: [[$class: 'StringParameterValue', name: 'BUILD_NUMBER', value: buildNumber]])
+                    def projectToTrigger = ${jobName}
+                    echo "job name ${SecondstatusCode}"
+                    def lastSuccessfulBuild = jenkins.model.Jenkins.instance.getItem(projectToTrigger).getLastSuccessfulBuild()
+                    echo "Last successful build  ${SecondstatusCode}"
+                    if (lastSuccessfulBuild) {
 
-                    
-                        echo "success to trigger build #${buildNumber} of job ${jobName}."
-                    
+                        build(job: projectToTrigger, parameters: [], propagate: false)
+
+                    } else {
+
+                        error("No successful builds found for ${projectToTrigger}")
+
+                    }
+
                 }
+
             }
+
         }
+
+    }
+
+
         }
 
 }
