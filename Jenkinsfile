@@ -5,7 +5,9 @@ pipeline {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
     }
-
+    options {
+        disableConcurrentBuilds()     
+        }
     stages {
         stage('Call Management API') { // A single stage that encompasses both steps
             steps {
@@ -130,6 +132,22 @@ pipeline {
                             else {
                                 echo "Second endpoint request  with status code ${SecondstatusCode}"
                             }
+        stage('Trigger Last Successful Build') {
+            steps {
+                script {
+                    def projectToTrigger = 'Your-Project-Name'
+                    def lastSuccessfulBuild = jenkins.model.Jenkins.instance.getItem(projectToTrigger).getLastSuccessfulBuild()
+
+ 
+
+                    if (lastSuccessfulBuild) {
+                        build(job: projectToTrigger, parameters: [], propagate: false)
+                    } else {
+                        error("No successful builds found for ${projectToTrigger}")
+                    }
+                }
+            }
+        }
             }
         }
     }
