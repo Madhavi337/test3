@@ -1,7 +1,6 @@
 pipeline {
     agent any
 
-<<<<<<< HEAD
     environment {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
@@ -51,26 +50,11 @@ pipeline {
                         validResponseCodes: '200,404', // Include 404 as an accepted status code
                         ignoreSslErrors: true,
                     )
-=======
-    stages {
-        stage('Copy Files') {
-            steps {
-                script {
-                    def sourceFolder = 'D:\madhavi\SourceFolder'
-                    def destinationFolder = 'D:\madhavi\DestinationFolder'
 
-                    // Check if source folder exists
-                    if (!fileExists(sourceFolder)) {
-                        error("Source folder does not exist: $sourceFolder")
-                    }
->>>>>>> origin/master
+                    // Capture the response status code and content
+                    def SecondstatusCode = res.getStatus()
+                    def SecondresponseBody = res.getContent()
 
-                    // Create destination folder if it doesn't exist
-                    if (!fileExists(destinationFolder)) {
-                        sh "mkdir -p $D:\madhavi\DestinationFolder"
-                    }
-
-<<<<<<< HEAD
                     echo "Response Status Code: ${SecondstatusCode}"
                     echo "Response Body: ${SecondresponseBody}"
 
@@ -146,21 +130,9 @@ pipeline {
                             else {
                                 echo "Second endpoint request  with status code ${SecondstatusCode}"
                             }
-=======
-                    // Copy files from source to destination
-                    sh "cp -r $D:\madhavi\SourceFolder/* $D:\madhavi\DestinationFolder/"
-                }
->>>>>>> origin/master
             }
         }
     }
 }
 
-<<<<<<< HEAD
 }
-=======
-def fileExists(path) {
-    def file = new File(path)
-    return file.exists()
-}
->>>>>>> origin/master
