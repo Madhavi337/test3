@@ -22,6 +22,27 @@ pipeline {
                     if (response.status == 200) {
                         def buildNumber = response.getContent()
                         echo "Build Number: ${buildNumber}"
+                        
+                        // Trigger the rebuild as an HTTP request
+                        def rebuildResponse = httpRequest(
+                            url: "http://localhost:8085/job/sample/job/master/${buildNumber}/rebuild",
+                            httpMode: 'GET',
+                            customHeaders: [
+                                [name: "Authorization", value: "Basic TWFkaGF2aTptb2tzaGFAOTg="],
+                                [name: "Cookie", value: "JSESSIONID.4dd3ed8c=node01lzbzk4zdxup81bu3t8onxsw168.node0; JSESSIONID.d107a756=node01tw654ksf9i0ljd6cc9btuklu16.node0"]
+                            ],
+                            responseHandle: 'NONE',
+                            timeout: 60,
+                            validResponseCodes: '200',
+                            ignoreSslErrors: true,
+                        )
+                        
+                        // Check if the rebuild request was successful
+                        if (rebuildResponse.status == 200) {
+                            echo "Rebuild request successful"
+                        } else {
+                            error "Failed to trigger the rebuild (HTTP status ${rebuildResponse.status})"
+                        }
                     } else {
                         error "Failed to retrieve the build number (HTTP status ${response.status})"
                     }
