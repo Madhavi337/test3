@@ -18,9 +18,9 @@ pipeline {
                         ignoreSslErrors: true,
                     )
                         stage('Prepare Workspace') {
-                            steps {
+                            
                                 cleanWs()
-                            }
+                            
                         }
                     // Check if the HTTP request was successful
                     if (response.status == 200) {
@@ -29,7 +29,7 @@ pipeline {
 
                         // Trigger the rebuild as an HTTP request
                         def rebuildResponse = httpRequest(
-                            url: "http://localhost:8085/job/sample/job/master/buildWithParameters?BUILD_NUMBER=167",
+                            url: "http://localhost:8085/job/sample/job/master/167/rebuild",
                             httpMode: 'POST', // Change to POST
                             customHeaders: [
                                 [name: "Authorization", value: "Basic TWFkaGF2aTptb2tzaGFAOTg="],
