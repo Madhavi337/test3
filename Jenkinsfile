@@ -17,7 +17,11 @@ pipeline {
                         validResponseCodes: '200',
                         ignoreSslErrors: true,
                     )
-
+                        stage('Prepare Workspace') {
+                            steps {
+                                cleanWs()
+                            }
+                        }
                     // Check if the HTTP request was successful
                     if (response.status == 200) {
                         def buildNumber = response.getContent()
